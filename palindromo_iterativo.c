@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <ctype.h>
 #include <string.h>
+#include <time.h>
 
 // função que troca letras maiúsculas por minúsculas e "," por "backspace"
 void limpafrase(char frase[], int tam){

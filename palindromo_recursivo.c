@@ -2,8 +2,9 @@
 #include <string.h>
 #include <stdbool.h>
 #include <stdlib.h>
+#include <time.h>
 
-
+//Função que "limpa a frase", retira caracteres não alfanuméricos.
 void limpaFrase(char *frase){
     int j = 0;
     for (int i = 0; frase[i] != '\0'; i++){
@@ -14,6 +15,9 @@ void limpaFrase(char *frase){
     frase[j] = '\0';
 }
 
+//Função recursiva que verifica se é palíndromo ou não
+//A função compara o primeiro caractere da string limpa com o último e retorna falso caso sejam diferentes
+//Caso sejam iguais, ela cria uma nova string sem esses mesmos caracteres e chama a função de novo para essa nova string
 bool ePalindromo(char *frase){
     if (((int)(strlen(frase) - 1 )< 1)){
         return true;
@@ -40,7 +44,7 @@ int main(){
     char *frase = (char*)malloc(sizeof(char)* 1002);
     while (fgets(frase, 1002, stdin) != NULL){
         limpaFrase(frase);
-        char *resposta = ePalindromo(frase) ? "SIM" : "NÃO";
+        char *resposta = ePalindromo(frase) ? "Sim" : "Não";
         printf("%s\n", resposta);
     }
 
