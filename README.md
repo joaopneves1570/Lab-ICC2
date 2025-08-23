@@ -36,3 +36,19 @@ Um **palíndromo** é uma sequência que pode ser lida da mesma forma da esquerd
 
 ## 📥 Exemplos de Entrada e Saída
 **Entrada:**
+ICMC
+Rir, o breve verbo rir
+ab12ba
+ab1ba
+Luz azul
+1551
+a
+
+**Saída:**
+Não
+Sim
+Não
+Sim
+Sim
+Sim
+Sim
