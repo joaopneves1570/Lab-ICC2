@@ -2,9 +2,9 @@
 #include <string.h>
 #include <stdbool.h>
 #include <stdlib.h>
-#include <time.h>
+#include <windows.h>  // Para QueryPerformanceCounter
 
-//Função que "limpa a frase", retira caracteres não alfanuméricos.
+// Função que "limpa a frase", retira caracteres não alfanuméricos
 void limpaFrase(char *frase){
     int j = 0;
     for (int i = 0; frase[i] != '\0'; i++){
@@ -15,11 +15,9 @@ void limpaFrase(char *frase){
     frase[j] = '\0';
 }
 
-//Função recursiva que verifica se é palíndromo ou não
-//A função compara o primeiro caractere da string limpa com o último e retorna falso caso sejam diferentes
-//Caso sejam iguais, ela cria uma nova string sem esses mesmos caracteres e chama a função de novo para essa nova string
+// Função recursiva que verifica se é palíndromo ou não
 bool ePalindromo(char *frase){
-    if (((int)(strlen(frase) - 1 )< 1)){
+    if (((int)(strlen(frase) - 1) < 1)){
         return true;
     }
 
@@ -37,18 +35,30 @@ bool ePalindromo(char *frase){
     } else {
         return false;
     }
-    
 }
 
 int main(){
-    char *frase = (char*)malloc(sizeof(char)* 1002);
+    char *frase = (char*)malloc(sizeof(char)*1002);
+    LARGE_INTEGER inicio, fim, freq;
+    double tempo_execucao;
+
+    QueryPerformanceFrequency(&freq); // pega a frequência do contador
+
     while (fgets(frase, 1002, stdin) != NULL){
+        frase[strcspn(frase, "\n")] = '\0'; // remove \n
         limpaFrase(frase);
-        char *resposta = ePalindromo(frase) ? "Sim" : "Não";
+
+        QueryPerformanceCounter(&inicio); // início da medição
+        bool resultado = ePalindromo(frase);
+        QueryPerformanceCounter(&fim);    // fim da medição
+
+        tempo_execucao = (double)(fim.QuadPart - inicio.QuadPart) / freq.QuadPart;
+
+        char *resposta = resultado ? "Sim" : "Não";
         printf("%s\n", resposta);
+        printf("Tempo de execucao: %.9f segundos\n", tempo_execucao);
     }
 
     free(frase); frase = NULL;
-
     return 0;
 }
