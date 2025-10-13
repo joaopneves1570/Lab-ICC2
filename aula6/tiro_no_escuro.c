@@ -48,7 +48,7 @@ void combina(int s[], int inicio, int meio, int fim){
     
     int i = 0;
     int j = 0;
-    int k = 0;
+    int k = inicio;
 
     while (i < n1 && j < n2) {
     if (esq[i] <= dir[j])
@@ -69,7 +69,7 @@ void combina(int s[], int inicio, int meio, int fim){
 
 void merge_sort(int s[], int inicio, int fim){
     if (inicio < fim){
-        int meio =  (inicio + fim)/2;
+        int meio =  inicio + (fim - inicio)/2;
         merge_sort(s, inicio, meio);
         merge_sort(s, meio + 1, fim);
         combina(s, inicio, meio, fim);
@@ -109,8 +109,19 @@ void heapSort(int s[], int n) {
 }
 
 int partition(int s[], int inicio, int fim) {
+    int meio = inicio + (fim - inicio) / 2;
+
+    if (s[inicio] > s[meio])
+        swap(&s[inicio], &s[meio]);
+    if (s[inicio] > s[fim])
+        swap(&s[inicio], &s[fim]);
+    if (s[meio] > s[fim])
+        swap(&s[meio], &s[fim]);
+    
+    swap(&s[meio], &s[fim]);
     
     int pivo = s[fim];
+    
     int i = inicio - 1;
 
     for (int j = inicio; j <= fim - 1; j++) {
@@ -159,12 +170,12 @@ int main(){
             merge_sort(sequencia, 0, n - 1);
             break;
 
-        case 1:
+        case 3:
             heapSort(sequencia, n);
             break;
 
-        case 3:
-            quickSort(sequencia, 0, n-1);
+        case 1:
+            quickSort(sequencia, 0, n - 1);
             break;
     }
 
