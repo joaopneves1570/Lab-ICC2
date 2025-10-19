@@ -1,191 +1,133 @@
 #include "util.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdint.h>
 
-
-void gerar_reverso(int n, int* sequencia){
+void gerar_reverso(int n, int* sequencia) {
     for (int i = 0; i < n; i++)
-        sequencia[i] = n-i;
+        sequencia[i] = n - i;
 }
 
-void gerar_aleatoria(int n, int* sequencia){
+void gerar_aleatoria(int n, int* sequencia) {
     int seed = 12345;
-    for (int i = 0; i < n; i++){
-        int random = get_random(&seed, n);
-        sequencia[i] = random;
-    }
+    for (int i = 0; i < n; i++)
+        sequencia[i] = get_random(&seed, n);
 }
 
-void gerar_ordenada(int n, int* sequencia){
-    for (int i = 0; i < n; i++){
+void gerar_ordenada(int n, int* sequencia) {
+    for (int i = 0; i < n; i++)
         sequencia[i] = i + 1;
-    }
 }
 
-// void mostrar_sequencia(int* sequencia, int n){
-//     for (int i = 0; i < n; i++){
-//         printf("%d", sequencia[i]);
-//     }
-//     printf("\n");
-// }
-
-void swap(int* a, int* b) {
+static inline void swap(int* a, int* b) {
     int t = *a;
     *a = *b;
     *b = t;
 }
 
-void combina(int s[], int inicio, int meio, int fim){
-    int n1 = meio - inicio + 1;
-    int n2 = fim - meio;
-
-    int* esq = (int*)malloc(sizeof(int)*n1);
-    int* dir = (int*)malloc(sizeof(int)*n2);
-
-    for (int i = 0; i < n1; i++)
-        esq[i] = s[inicio + i];
-
-    for (int j = 0; j < n2; j++)
-        dir[j] = s[meio + 1 + j];
-    
-    int i = 0;
-    int j = 0;
-    int k = inicio;
-
-    while (i < n1 && j < n2) {
-    if (esq[i] <= dir[j])
-        s[k++] = esq[i++];
-    else
-        s[k++] = dir[j++];
-    }   
-
-    while (i < n1)
-        s[k++] = esq[i++];
-    while (j < n2)
-        s[k++] = dir[j++];
-
-    free(esq);
-    free(dir);
-
-}
-
-void merge_sort(int s[], int inicio, int fim){
-    if (inicio < fim){
-        int meio =  inicio + (fim - inicio)/2;
-        merge_sort(s, inicio, meio);
-        merge_sort(s, meio + 1, fim);
-        combina(s, inicio, meio, fim);
-    }
-}
-
-void heapify(int s[], int n, int i) {
-    
-    int pai = i; 
-    int esq = 2 * i + 1; 
-    int dir = 2 * i + 2;
-    
-    if (esq < n && s[esq] > s[pai]) {
-        pai = esq;
-    }
-
-    if (dir < n && s[dir] > s[pai]) {
-        pai = dir;
-    }
-    
-    if (pai != i) {
-        swap(&s[pai], &s[i]);
-        heapify(s, n, pai);
-    }
-}
-
-void heapSort(int s[], int n) {
-
-    for (int i = n / 2 - 1; i >= 0; i--) {
-        heapify(s, n, i);
-    }
-
-    for (int i = n - 1; i > 0; i--) {
-        swap(&s[0], &s[i]);
-        heapify(s, i, 0);
-    }
-}
-
-int partition(int s[], int inicio, int fim) {
-    int meio = inicio + (fim - inicio) / 2;
-
-    if (s[inicio] > s[meio])
-        swap(&s[inicio], &s[meio]);
-    if (s[inicio] > s[fim])
-        swap(&s[inicio], &s[fim]);
-    if (s[meio] > s[fim])
-        swap(&s[meio], &s[fim]);
-    
-    swap(&s[meio], &s[fim]);
-    
-    int pivo = s[fim];
-    
-    int i = inicio - 1;
-
-    for (int j = inicio; j <= fim - 1; j++) {
-        if (s[j] < pivo) {
-            i++;
-            swap(&s[i], &s[j]);
+/* -------------------- SHELL SORT -------------------- */
+void shellSort(int s[], int n) {
+    for (int gap = n / 2; gap > 0; gap /= 2) {
+        for (int i = gap; i < n; i++) {
+            int temp = s[i];
+            int j;
+            for (j = i; j >= gap && s[j - gap] > temp; j -= gap)
+                s[j] = s[j - gap];
+            s[j] = temp;
         }
     }
-    
-    swap(&s[i + 1], &s[fim]);  
-    return i + 1;
 }
 
+/* -------------------- QUICK SORT -------------------- */
+void quickSort(int v[], int inf, int sup) {
+    if (inf >= sup) return;
 
-void quickSort(int s[], int inicio, int fim) {
-    if (inicio < fim) {
-        
-        int pi = partition(s, inicio, fim);
-        quickSort(s, inicio, pi - 1);
-        quickSort(s, pi + 1, fim);
+    int i = inf, j = sup;
+    int pivo = v[(inf + sup) / 2];
+
+    while (i <= j) {
+        while (v[i] < pivo) i++;
+        while (v[j] > pivo) j--;
+        if (i <= j) {
+            swap(&v[i], &v[j]);
+            i++;
+            j--;
+        }
+    }
+
+    if (inf < j) quickSort(v, inf, j);
+    if (i < sup) quickSort(v, i, sup);
+}
+
+/* -------------------- HEAP SORT -------------------- */
+void rearranjar_heap(int v[], int i, int tamanho) {
+    register int temp = v[i];
+    register int filho;
+
+    while ((filho = 2 * i + 1) < tamanho) {
+        if (filho + 1 < tamanho && v[filho + 1] > v[filho])
+            filho++;
+
+        if (v[filho] > temp) {
+            v[i] = v[filho];
+            i = filho;
+        } else {
+            break;
+        }
+    }
+
+    v[i] = temp;
+}
+
+void heapsort(int v[], int n) {
+    for (int i = n / 2 - 1; i >= 0; i--)
+        rearranjar_heap(v, i, n);
+    for (int i = n - 1; i > 0; i--) {
+        swap(&v[0], &v[i]);
+        rearranjar_heap(v, 0, i);
     }
 }
 
-int main(){
+/* -------------------- MAIN -------------------- */
+int main() {
     int n;
     scanf("%d", &n);
 
-    char* comando = (char*)malloc(sizeof(char)* 10);
-    scanf("%s", comando);
+    char comando[16];
+    scanf("%15s", comando);
 
     int algoritmo;
     scanf("%d", &algoritmo);
 
     int* sequencia = (int*)malloc(sizeof(int) * n);
-    
+    if (!sequencia) return 1;
+
     if (strcmp(comando, "reverse") == 0)
         gerar_reverso(n, sequencia);
-    if (strcmp(comando, "random") == 0)
+    else if (strcmp(comando, "random") == 0)
         gerar_aleatoria(n, sequencia);
-    if (strcmp(comando, "sorted") == 0)
+    else if (strcmp(comando, "sorted") == 0)
         gerar_ordenada(n, sequencia);
 
 
-    switch(algoritmo){
-        case 2:
-            merge_sort(sequencia, 0, n - 1);
-            break;
-
-        case 3:
-            heapSort(sequencia, n);
-            break;
-
+    switch (algoritmo) {
         case 1:
             quickSort(sequencia, 0, n - 1);
             break;
-    }
-
+        case 2:
+            shellSort(sequencia, n);
+            break;
+        case 3:
+            heapsort(sequencia, n);
+            break;
+        }
+    
 
     init_crc32();
     uint32_t saida = crc32(0, sequencia, n * sizeof(int));
     printf("%08X", saida);
 
-    free(comando);
     free(sequencia);
-
     return 0;
 }
