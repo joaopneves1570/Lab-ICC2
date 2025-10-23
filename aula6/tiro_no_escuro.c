@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdint.h>
+#include <math.h>
 
 void gerar_reverso(int n, int* sequencia) {
     for (int i = 0; i < n; i++)
@@ -89,6 +90,44 @@ void heapsort(int v[], int n) {
     }
 }
 
+/* -------------------- INTRO SORT -------------------- */
+
+int depthLimit(int n) {
+    return (int)(2.0 * log(n));
+}
+
+void introsortUtil(int v[], int inicio, int fim, int depthLimit) {
+    int tamanho = fim - inicio + 1;
+
+    if (depthLimit == 0) {
+        heapsort(v + inicio, tamanho);
+        return;
+    }
+
+    int i = inicio, j = fim;
+    int pivo = v[(inicio + fim) / 2];
+
+    while (i <= j) {
+        while (v[i] < pivo) i++;
+        while (v[j] > pivo) j--;
+        if (i <= j) {
+            swap(&v[i], &v[j]);
+            i++;
+            j--;
+        }
+    }
+
+    if (inicio < j) introsortUtil(v, inicio, j, depthLimit - 1);
+    if (i < fim) introsortUtil(v, i, fim, depthLimit - 1);
+}
+
+void introsort(int v[], int n) {
+    int limit = depthLimit(n);
+    introsortUtil(v, 0, n - 1, limit);
+}
+
+
+
 /* -------------------- MAIN -------------------- */
 int main() {
     int n;
@@ -119,7 +158,7 @@ int main() {
             shellSort(sequencia, n);
             break;
         case 3:
-            heapsort(sequencia, n);
+            introsort(sequencia, n);
             break;
         }
     
