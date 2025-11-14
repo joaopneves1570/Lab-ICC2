@@ -1,36 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-// typedef struct no_ NO;
-// typedef struct lista_ LISTA;
-
-// struct no_{
-//     int valor;
-//     NO* prox;
-// };
-
-// struct lista_{
-//     int tamanho;
-//     NO* inicio;
-// };
-
-// LISTA* cria_lista(){
-//     LISTA* lista = (LISTA*)malloc(sizeof(LISTA));
-//     if (lista != NULL){
-//         NO* cabeca = (NO*)malloc(sizeof(NO));
-//         if (!cabeca){
-//             free(lista);
-//             return NULL;
-//         }
-
-
-
-//     }
-
-//     return NULL;
-// }
-
-
 void montaVetor(int v[], int n){
     int valor;
     for (int i = 0; i < n; i++){
